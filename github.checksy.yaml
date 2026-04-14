@@ -1,0 +1,42 @@
+rules:
+  - name: github cli installed
+    check: which gh > /dev/null
+    severity: warn
+  - name: authenticated to github cli
+    check: gh auth status
+    severity: warn
+    fix: gh auth login
+  - name: repo has codeowners file
+    check: '[ -s CODEOWNERS ]'
+    severity: warn
+  - name: repo has pr template
+    check: '[ -f .github/pull_request_template.md ]'
+    severity: warn
+  - name: repo has issue template
+    check: '[ -d .github/ISSUE_TEMPLATE ]'
+    severity: warn
+  - name: github ssh known_hosts configured
+    check: 'ssh-keygen -F github.com > /dev/null'
+    severity: warn
+  - name: main branch is protected
+    check: '[ "$(gh api repos/{owner}/{repo}/branches/main | jq .protected)" = "true" ]'
+    hint: https://docs.github.com/rest/branches/branch-protection#get-branch-protection
+    severity: warn
+  - name: git user.name configured
+    check: git config user.name
+    severity: warn
+  - name: git user.email configured
+    check: git config user.email
+    severity: warn
+  - name: github workflows exist in repo
+    check: '[ -d .github/workflows ] && ls .github/workflows/*.yml 1> /dev/null 2>&1'
+    severity: warn
+  - name: ci workflow exists in repo
+    check: 'grep -R "pull_request" .github/workflows'
+    severity: warn
+  - name: commit signing is enabled
+    check: 'test "$(git config --get commit.gpgsign)" = "true"'
+    severity: warn
+  - name: git signing key is configured
+    check: 'test -n "$(git config --get user.signingkey)"'
+    severity: warn
