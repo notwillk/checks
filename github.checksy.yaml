@@ -5,7 +5,6 @@ rules:
   - name: authenticated to github cli
     check: gh auth status
     severity: warn
-    fix: gh auth login
   - name: repo has codeowners file
     check: '[ -s CODEOWNERS ]'
     severity: warn
